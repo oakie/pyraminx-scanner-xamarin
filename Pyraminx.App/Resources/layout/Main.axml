@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <include
+    android:id="@+id/Toolbar"
+    layout="@layout/Toolbar" />
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_below="@+id/Toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <pyraminx.app.views.PortraitCameraView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_weight="1"
+      show_fps="true"
+      android:id="@+id/CameraView" />
+
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+      <Button
+        android:text="Toggle flash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/CameraFlashBtn" />
+      <Button
+        android:text="Process"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/CameraProcessBtn" />
+      <Button
+        android:text="Control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/RobotControlBtn" />
+    </LinearLayout>
+  </LinearLayout>
+</RelativeLayout>

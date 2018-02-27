@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+  <include
+    android:id="@+id/Toolbar"
+    layout="@layout/Toolbar" />
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_below="@+id/Toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+      style="@style/HeaderStyle"
+      android:text="robot control" />
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+      <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Reset"
+        android:id="@+id/RobotResetBtn" />
+    </LinearLayout>
+
+    <TextView
+      style="@style/HeaderStyle"
+      android:text="execute twists" />
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="W+"
+          android:id="@+id/TwistWPosBtn" />
+        <Button
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="W-"
+          android:id="@+id/TwistWNegBtn" />
+      </LinearLayout>
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="X+"
+          android:id="@+id/TwistXPosBtn" />
+        <Button
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="X-"
+          android:id="@+id/TwistXNegBtn" />
+      </LinearLayout>
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Y+"
+          android:id="@+id/TwistYPosBtn" />
+        <Button
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Y-"
+          android:id="@+id/TwistYNegBtn" />
+      </LinearLayout>
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Z+"
+          android:id="@+id/TwistZPosBtn" />
+        <Button
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="Z-"
+          android:id="@+id/TwistZNegBtn" />
+      </LinearLayout>
+    </LinearLayout>
+  </LinearLayout>
+</RelativeLayout>
