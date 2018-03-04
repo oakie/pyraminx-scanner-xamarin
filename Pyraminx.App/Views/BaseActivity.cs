@@ -5,29 +5,35 @@ using Android.OS;
 using Android.Support.V7.App;
 using Android.Support.V7.Widget;
 using Android.Views;
+using Pyraminx.App.Misc;
 using Pyraminx.App.Service;
 using Pyraminx.Common;
-
-//using Pyraminx.Android.Misc;
-//using Pyraminx.Common;
+using Pyraminx.Core;
 
 namespace Pyraminx.App.Views
 {
-    [Activity(ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait, Theme = "@style/AppTheme")]
+    public delegate void OnServiceConnectionChanged(bool connected);
+
     public abstract class BaseActivity : AppCompatActivity, IServiceConnection
     {
-        protected abstract string Prefix { get; }
         protected abstract int Layout { get; }
         protected abstract string Header { get; }
 
-        protected PyraminxService Service { get; set; }
-        protected bool ServiceBound = false;
+        protected const ConfigChanges Config = ConfigChanges.ScreenSize | ConfigChanges.Orientation;
+        protected const ScreenOrientation Orientation = ScreenOrientation.Portrait;
+        protected const string BaseTheme = "@style/AppTheme";
+
+        protected ILogger Logger = new Logger();
+
+        public event OnServiceConnectionChanged OnServiceConnectionChanged;
+        public PyraminxService Service { get; protected set; }
+        public bool ServiceBound { get; protected set; }
 
         protected IMenuItem ConnectMenuItem, DisconnectMenuItem;
 
-        protected override void OnCreate(Bundle savedInstanceState)
+        protected override void OnCreate(Bundle state)
         {
-            base.OnCreate(savedInstanceState);
+            base.OnCreate(state);
             SetContentView(Layout);
 
             var toolbar = FindViewById<Toolbar>(Resource.Id.Toolbar);
@@ -46,21 +52,35 @@ namespace Pyraminx.App.Views
 
         protected override void OnStart()
         {
+            Logger.Debug("BaseActivity.OnStart " + ServiceBound);
+
             base.OnStart();
             if (!ServiceBound)
             {
-                Intent intent = new Intent(this, typeof(PyraminxService));
-                BindService(intent, this, Bind.AutoCreate);
+                Intent intent = new Intent(ApplicationContext, typeof(PyraminxService));
+                ApplicationContext.StartService(intent);
+                ApplicationContext.BindService(intent, this, Bind.AutoCreate);
+            }
+            else
+            {
+                OnServiceConnectionChanged?.Invoke(true);
             }
         }
 
         protected override void OnStop()
         {
+            Logger.Debug("BaseActivity.OnStop " + ServiceBound);
+
             if (ServiceBound)
             {
                 Service.Robot.OnConnectedChanged -= OnRobotConnectionChanged;
 
-                UnbindService(this);
+                ApplicationContext.UnbindService(this);
+                OnServiceDisconnected(null);
+            }
+            else
+            {
+                OnServiceConnectionChanged?.Invoke(false);
             }
             base.OnStop();
         }
@@ -98,6 +118,7 @@ namespace Pyraminx.App.Views
 
         protected virtual void OnRobotConnectionChanged(bool connected)
         {
+            Logger.Debug("BaseActivity.OnRobotConnectionChanged " + connected);
             RunOnUiThread(() =>
             {
                 Utils.Toast("Robot connected: " + connected);
@@ -108,8 +129,11 @@ namespace Pyraminx.App.Views
 
         public virtual void OnServiceConnected(ComponentName name, IBinder service)
         {
+            Logger.Debug("BaseActivity.OnServiceConnected");
+
             Service = (service as PyraminxBinder)?.Service;
             ServiceBound = Service != null;
+            OnServiceConnectionChanged?.Invoke(ServiceBound);
 
             if (Service == null)
                 return;
@@ -120,8 +144,11 @@ namespace Pyraminx.App.Views
 
         public virtual void OnServiceDisconnected(ComponentName name)
         {
+            Logger.Debug("BaseActivity.OnServiceDisconnected");
+
             Service = null;
             ServiceBound = false;
+            OnServiceConnectionChanged?.Invoke(ServiceBound);
         }
     }
 }

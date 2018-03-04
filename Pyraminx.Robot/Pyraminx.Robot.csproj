@@ -54,6 +54,10 @@
       <Project>{5F2DDC39-55A0-4DE8-8CEB-981E00C6B4A8}</Project>
       <Name>Pyraminx.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Pyraminx.Core\Pyraminx.Core.csproj">
+      <Project>{73146173-507B-4DD3-A775-9A80A487B5F6}</Project>
+      <Name>Pyraminx.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

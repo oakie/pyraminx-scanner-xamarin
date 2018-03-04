@@ -892,44 +892,44 @@ namespace Pyraminx.App
 		public partial class Color
 		{
 			
-			// aapt resource value: 0x7f0a003e
-			public const int abc_background_cache_hint_selector_material_dark = 2131361854;
-			
-			// aapt resource value: 0x7f0a003f
-			public const int abc_background_cache_hint_selector_material_light = 2131361855;
-			
-			// aapt resource value: 0x7f0a0040
-			public const int abc_btn_colored_borderless_text_material = 2131361856;
-			
 			// aapt resource value: 0x7f0a0041
-			public const int abc_btn_colored_text_material = 2131361857;
+			public const int abc_background_cache_hint_selector_material_dark = 2131361857;
 			
 			// aapt resource value: 0x7f0a0042
-			public const int abc_color_highlight_material = 2131361858;
+			public const int abc_background_cache_hint_selector_material_light = 2131361858;
 			
 			// aapt resource value: 0x7f0a0043
-			public const int abc_hint_foreground_material_dark = 2131361859;
+			public const int abc_btn_colored_borderless_text_material = 2131361859;
 			
 			// aapt resource value: 0x7f0a0044
-			public const int abc_hint_foreground_material_light = 2131361860;
+			public const int abc_btn_colored_text_material = 2131361860;
+			
+			// aapt resource value: 0x7f0a0045
+			public const int abc_color_highlight_material = 2131361861;
+			
+			// aapt resource value: 0x7f0a0046
+			public const int abc_hint_foreground_material_dark = 2131361862;
+			
+			// aapt resource value: 0x7f0a0047
+			public const int abc_hint_foreground_material_light = 2131361863;
 			
 			// aapt resource value: 0x7f0a0000
 			public const int abc_input_method_navigation_guard = 2131361792;
 			
-			// aapt resource value: 0x7f0a0045
-			public const int abc_primary_text_disable_only_material_dark = 2131361861;
-			
-			// aapt resource value: 0x7f0a0046
-			public const int abc_primary_text_disable_only_material_light = 2131361862;
-			
-			// aapt resource value: 0x7f0a0047
-			public const int abc_primary_text_material_dark = 2131361863;
-			
 			// aapt resource value: 0x7f0a0048
-			public const int abc_primary_text_material_light = 2131361864;
+			public const int abc_primary_text_disable_only_material_dark = 2131361864;
 			
 			// aapt resource value: 0x7f0a0049
-			public const int abc_search_url_text = 2131361865;
+			public const int abc_primary_text_disable_only_material_light = 2131361865;
+			
+			// aapt resource value: 0x7f0a004a
+			public const int abc_primary_text_material_dark = 2131361866;
+			
+			// aapt resource value: 0x7f0a004b
+			public const int abc_primary_text_material_light = 2131361867;
+			
+			// aapt resource value: 0x7f0a004c
+			public const int abc_search_url_text = 2131361868;
 			
 			// aapt resource value: 0x7f0a0001
 			public const int abc_search_url_text_normal = 2131361793;
@@ -940,29 +940,29 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0a0003
 			public const int abc_search_url_text_selected = 2131361795;
 			
-			// aapt resource value: 0x7f0a004a
-			public const int abc_secondary_text_material_dark = 2131361866;
-			
-			// aapt resource value: 0x7f0a004b
-			public const int abc_secondary_text_material_light = 2131361867;
-			
-			// aapt resource value: 0x7f0a004c
-			public const int abc_tint_btn_checkable = 2131361868;
-			
 			// aapt resource value: 0x7f0a004d
-			public const int abc_tint_default = 2131361869;
+			public const int abc_secondary_text_material_dark = 2131361869;
 			
 			// aapt resource value: 0x7f0a004e
-			public const int abc_tint_edittext = 2131361870;
+			public const int abc_secondary_text_material_light = 2131361870;
 			
 			// aapt resource value: 0x7f0a004f
-			public const int abc_tint_seek_thumb = 2131361871;
+			public const int abc_tint_btn_checkable = 2131361871;
 			
 			// aapt resource value: 0x7f0a0050
-			public const int abc_tint_spinner = 2131361872;
+			public const int abc_tint_default = 2131361872;
 			
 			// aapt resource value: 0x7f0a0051
-			public const int abc_tint_switch_track = 2131361873;
+			public const int abc_tint_edittext = 2131361873;
+			
+			// aapt resource value: 0x7f0a0052
+			public const int abc_tint_seek_thumb = 2131361874;
+			
+			// aapt resource value: 0x7f0a0053
+			public const int abc_tint_spinner = 2131361875;
+			
+			// aapt resource value: 0x7f0a0054
+			public const int abc_tint_switch_track = 2131361876;
 			
 			// aapt resource value: 0x7f0a0004
 			public const int accent_material_dark = 2131361796;
@@ -1005,6 +1005,15 @@ namespace Pyraminx.App
 			
 			// aapt resource value: 0x7f0a0011
 			public const int button_material_light = 2131361809;
+			
+			// aapt resource value: 0x7f0a0040
+			public const int color_accent = 2131361856;
+			
+			// aapt resource value: 0x7f0a003e
+			public const int color_primary = 2131361854;
+			
+			// aapt resource value: 0x7f0a003f
+			public const int color_primary_dark = 2131361855;
 			
 			// aapt resource value: 0x7f0a0012
 			public const int dim_foreground_disabled_material_dark = 2131361810;
@@ -1126,11 +1135,11 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0a0036
 			public const int switch_thumb_disabled_material_light = 2131361846;
 			
-			// aapt resource value: 0x7f0a0052
-			public const int switch_thumb_material_dark = 2131361874;
+			// aapt resource value: 0x7f0a0055
+			public const int switch_thumb_material_dark = 2131361877;
 			
-			// aapt resource value: 0x7f0a0053
-			public const int switch_thumb_material_light = 2131361875;
+			// aapt resource value: 0x7f0a0056
+			public const int switch_thumb_material_light = 2131361878;
 			
 			// aapt resource value: 0x7f0a0037
 			public const int switch_thumb_normal_material_dark = 2131361847;
@@ -1819,20 +1828,14 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b0024
 			public const int CTRL = 2131427364;
 			
-			// aapt resource value: 0x7f0b0073
-			public const int CameraFlashBtn = 2131427443;
+			// aapt resource value: 0x7f0b0086
+			public const int CameraView = 2131427462;
 			
-			// aapt resource value: 0x7f0b0074
-			public const int CameraProcessBtn = 2131427444;
+			// aapt resource value: 0x7f0b0088
+			public const int ConnectAction = 2131427464;
 			
-			// aapt resource value: 0x7f0b0072
-			public const int CameraView = 2131427442;
-			
-			// aapt resource value: 0x7f0b008a
-			public const int ConnectAction = 2131427466;
-			
-			// aapt resource value: 0x7f0b008b
-			public const int DisconnectAction = 2131427467;
+			// aapt resource value: 0x7f0b0089
+			public const int DisconnectAction = 2131427465;
 			
 			// aapt resource value: 0x7f0b0025
 			public const int FUNCTION = 2131427365;
@@ -1840,11 +1843,8 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b0026
 			public const int META = 2131427366;
 			
-			// aapt resource value: 0x7f0b0075
-			public const int RobotControlBtn = 2131427445;
-			
-			// aapt resource value: 0x7f0b0069
-			public const int RobotResetBtn = 2131427433;
+			// aapt resource value: 0x7f0b0070
+			public const int RobotResetBtn = 2131427440;
 			
 			// aapt resource value: 0x7f0b0027
 			public const int SHIFT = 2131427367;
@@ -1852,35 +1852,38 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b0028
 			public const int SYM = 2131427368;
 			
-			// aapt resource value: 0x7f0b0068
-			public const int Toolbar = 2131427432;
-			
-			// aapt resource value: 0x7f0b006b
-			public const int TwistWNegBtn = 2131427435;
-			
-			// aapt resource value: 0x7f0b006a
-			public const int TwistWPosBtn = 2131427434;
-			
-			// aapt resource value: 0x7f0b006d
-			public const int TwistXNegBtn = 2131427437;
-			
-			// aapt resource value: 0x7f0b006c
-			public const int TwistXPosBtn = 2131427436;
-			
-			// aapt resource value: 0x7f0b006f
-			public const int TwistYNegBtn = 2131427439;
-			
-			// aapt resource value: 0x7f0b006e
-			public const int TwistYPosBtn = 2131427438;
+			// aapt resource value: 0x7f0b0072
+			public const int TabPager = 2131427442;
 			
 			// aapt resource value: 0x7f0b0071
-			public const int TwistZNegBtn = 2131427441;
+			public const int Toolbar = 2131427441;
 			
-			// aapt resource value: 0x7f0b0070
-			public const int TwistZPosBtn = 2131427440;
+			// aapt resource value: 0x7f0b0069
+			public const int TwistWNegBtn = 2131427433;
 			
-			// aapt resource value: 0x7f0b0079
-			public const int action0 = 2131427449;
+			// aapt resource value: 0x7f0b0068
+			public const int TwistWPosBtn = 2131427432;
+			
+			// aapt resource value: 0x7f0b006b
+			public const int TwistXNegBtn = 2131427435;
+			
+			// aapt resource value: 0x7f0b006a
+			public const int TwistXPosBtn = 2131427434;
+			
+			// aapt resource value: 0x7f0b006d
+			public const int TwistYNegBtn = 2131427437;
+			
+			// aapt resource value: 0x7f0b006c
+			public const int TwistYPosBtn = 2131427436;
+			
+			// aapt resource value: 0x7f0b006f
+			public const int TwistZNegBtn = 2131427439;
+			
+			// aapt resource value: 0x7f0b006e
+			public const int TwistZPosBtn = 2131427438;
+			
+			// aapt resource value: 0x7f0b0076
+			public const int action0 = 2131427446;
 			
 			// aapt resource value: 0x7f0b0059
 			public const int action_bar = 2131427417;
@@ -1903,17 +1906,17 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b0037
 			public const int action_bar_title = 2131427383;
 			
-			// aapt resource value: 0x7f0b0076
-			public const int action_container = 2131427446;
+			// aapt resource value: 0x7f0b0073
+			public const int action_container = 2131427443;
 			
 			// aapt resource value: 0x7f0b005a
 			public const int action_context_bar = 2131427418;
 			
-			// aapt resource value: 0x7f0b007d
-			public const int action_divider = 2131427453;
+			// aapt resource value: 0x7f0b007a
+			public const int action_divider = 2131427450;
 			
-			// aapt resource value: 0x7f0b0077
-			public const int action_image = 2131427447;
+			// aapt resource value: 0x7f0b0074
+			public const int action_image = 2131427444;
 			
 			// aapt resource value: 0x7f0b0002
 			public const int action_menu_divider = 2131427330;
@@ -1930,11 +1933,11 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b0039
 			public const int action_mode_close_button = 2131427385;
 			
-			// aapt resource value: 0x7f0b0078
-			public const int action_text = 2131427448;
+			// aapt resource value: 0x7f0b0075
+			public const int action_text = 2131427445;
 			
-			// aapt resource value: 0x7f0b0086
-			public const int actions = 2131427462;
+			// aapt resource value: 0x7f0b0083
+			public const int actions = 2131427459;
 			
 			// aapt resource value: 0x7f0b003a
 			public const int activity_chooser_view_content = 2131427386;
@@ -1969,14 +1972,14 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b0040
 			public const int buttonPanel = 2131427392;
 			
-			// aapt resource value: 0x7f0b007a
-			public const int cancel_action = 2131427450;
+			// aapt resource value: 0x7f0b0077
+			public const int cancel_action = 2131427447;
 			
 			// aapt resource value: 0x7f0b0050
 			public const int checkbox = 2131427408;
 			
-			// aapt resource value: 0x7f0b0082
-			public const int chronometer = 2131427458;
+			// aapt resource value: 0x7f0b007f
+			public const int chronometer = 2131427455;
 			
 			// aapt resource value: 0x7f0b002a
 			public const int collapseActionView = 2131427370;
@@ -2005,8 +2008,8 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b0021
 			public const int end = 2131427361;
 			
-			// aapt resource value: 0x7f0b0088
-			public const int end_padder = 2131427464;
+			// aapt resource value: 0x7f0b0085
+			public const int end_padder = 2131427461;
 			
 			// aapt resource value: 0x7f0b003b
 			public const int expand_activities_button = 2131427387;
@@ -2029,8 +2032,8 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b003f
 			public const int icon = 2131427391;
 			
-			// aapt resource value: 0x7f0b0087
-			public const int icon_group = 2131427463;
+			// aapt resource value: 0x7f0b0084
+			public const int icon_group = 2131427460;
 			
 			// aapt resource value: 0x7f0b002b
 			public const int ifRoom = 2131427371;
@@ -2038,8 +2041,8 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b003c
 			public const int image = 2131427388;
 			
-			// aapt resource value: 0x7f0b0083
-			public const int info = 2131427459;
+			// aapt resource value: 0x7f0b0080
+			public const int info = 2131427456;
 			
 			// aapt resource value: 0x7f0b0033
 			public const int italic = 2131427379;
@@ -2056,11 +2059,11 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b003e
 			public const int list_item = 2131427390;
 			
-			// aapt resource value: 0x7f0b007c
-			public const int media_actions = 2131427452;
+			// aapt resource value: 0x7f0b0079
+			public const int media_actions = 2131427449;
 			
-			// aapt resource value: 0x7f0b0089
-			public const int message = 2131427465;
+			// aapt resource value: 0x7f0b0087
+			public const int message = 2131427463;
 			
 			// aapt resource value: 0x7f0b0022
 			public const int middle = 2131427362;
@@ -2077,14 +2080,14 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b000f
 			public const int normal = 2131427343;
 			
-			// aapt resource value: 0x7f0b0085
-			public const int notification_background = 2131427461;
+			// aapt resource value: 0x7f0b0082
+			public const int notification_background = 2131427458;
 			
-			// aapt resource value: 0x7f0b007f
-			public const int notification_main_column = 2131427455;
+			// aapt resource value: 0x7f0b007c
+			public const int notification_main_column = 2131427452;
 			
-			// aapt resource value: 0x7f0b007e
-			public const int notification_main_column_container = 2131427454;
+			// aapt resource value: 0x7f0b007b
+			public const int notification_main_column_container = 2131427451;
 			
 			// aapt resource value: 0x7f0b0042
 			public const int parentPanel = 2131427394;
@@ -2098,11 +2101,11 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b0052
 			public const int radio = 2131427410;
 			
-			// aapt resource value: 0x7f0b0084
-			public const int right_icon = 2131427460;
+			// aapt resource value: 0x7f0b0081
+			public const int right_icon = 2131427457;
 			
-			// aapt resource value: 0x7f0b0080
-			public const int right_side = 2131427456;
+			// aapt resource value: 0x7f0b007d
+			public const int right_side = 2131427453;
 			
 			// aapt resource value: 0x7f0b0019
 			public const int screen = 2131427353;
@@ -2176,8 +2179,8 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b001c
 			public const int src_over = 2131427356;
 			
-			// aapt resource value: 0x7f0b007b
-			public const int status_bar_latest_event_content = 2131427451;
+			// aapt resource value: 0x7f0b0078
+			public const int status_bar_latest_event_content = 2131427448;
 			
 			// aapt resource value: 0x7f0b0053
 			public const int submenuarrow = 2131427411;
@@ -2200,8 +2203,8 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f0b0046
 			public const int textSpacerNoTitle = 2131427398;
 			
-			// aapt resource value: 0x7f0b0081
-			public const int time = 2131427457;
+			// aapt resource value: 0x7f0b007e
+			public const int time = 2131427454;
 			
 			// aapt resource value: 0x7f0b000d
 			public const int title = 2131427341;
@@ -2407,22 +2410,28 @@ namespace Pyraminx.App
 			public const int notification_template_part_time = 2130968619;
 			
 			// aapt resource value: 0x7f04002c
-			public const int select_dialog_item_material = 2130968620;
+			public const int Scanner = 2130968620;
 			
 			// aapt resource value: 0x7f04002d
-			public const int select_dialog_multichoice_material = 2130968621;
+			public const int select_dialog_item_material = 2130968621;
 			
 			// aapt resource value: 0x7f04002e
-			public const int select_dialog_singlechoice_material = 2130968622;
+			public const int select_dialog_multichoice_material = 2130968622;
 			
 			// aapt resource value: 0x7f04002f
-			public const int support_simple_spinner_dropdown_item = 2130968623;
+			public const int select_dialog_singlechoice_material = 2130968623;
 			
 			// aapt resource value: 0x7f040030
-			public const int Toolbar = 2130968624;
+			public const int Solver = 2130968624;
 			
 			// aapt resource value: 0x7f040031
-			public const int tooltip = 2130968625;
+			public const int support_simple_spinner_dropdown_item = 2130968625;
+			
+			// aapt resource value: 0x7f040032
+			public const int Toolbar = 2130968626;
+			
+			// aapt resource value: 0x7f040033
+			public const int tooltip = 2130968627;
 			
 			static Layout()
 			{
@@ -3079,8 +3088,14 @@ namespace Pyraminx.App
 			// aapt resource value: 0x7f08007e
 			public const int Base_Widget_AppCompat_Toolbar_Button_Navigation = 2131230846;
 			
+			// aapt resource value: 0x7f08016f
+			public const int Button = 2131231087;
+			
 			// aapt resource value: 0x7f08016d
 			public const int HeaderStyle = 2131231085;
+			
+			// aapt resource value: 0x7f08016e
+			public const int Pager = 2131231086;
 			
 			// aapt resource value: 0x7f08001e
 			public const int Platform_AppCompat = 2131230750;

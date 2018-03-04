@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FaceColor.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="Polyhedron.cs" />
     <Compile Include="Pyraminx.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />

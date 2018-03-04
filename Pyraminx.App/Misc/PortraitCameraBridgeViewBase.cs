@@ -94,7 +94,6 @@ namespace Pyraminx.App.Views
 
         public void SurfaceChanged(ISurfaceHolder holder, Format format, int width, int height)
         {
-            Utils.Log("call surfaceChanged event");
             lock (mSyncObject)
             {
                 if (!mSurfaceExist)
@@ -201,7 +200,6 @@ namespace Pyraminx.App.Views
          */
         private void CheckCurrentState()
         {
-            Utils.Log("call checkCurrentState");
             int targetState;
 
             if (mEnabled && mSurfaceExist && Visibility == ViewStates.Visible)
@@ -224,7 +222,6 @@ namespace Pyraminx.App.Views
 
         private void ProcessEnterState(int state)
         {
-            Utils.Log("call processEnterState: " + state);
             switch (state)
             {
                 case STARTED:
@@ -250,7 +247,6 @@ namespace Pyraminx.App.Views
 
         private void ProcessExitState(int state)
         {
-            Utils.Log("call processExitState: " + state);
             switch (state)
             {
                 case STARTED:
@@ -278,7 +274,6 @@ namespace Pyraminx.App.Views
         // Bitmap must be constructed before surface
         private void OnEnterStartedState()
         {
-            Utils.Log("call OnEnterStartedState");
             /* Connect camera */
             if (!ConnectCamera(Width, Height))
             {

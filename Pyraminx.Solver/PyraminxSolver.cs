@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Pyraminx.Solver
 {
-    public class BidirectionalSearchSolver
+    public class PyraminxSolver
     {
         public string DatabasePath { get; set; }
 
