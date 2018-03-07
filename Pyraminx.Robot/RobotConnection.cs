@@ -51,10 +51,10 @@ namespace Pyraminx.Robot
                         OnConnectedChanged?.Invoke(Connected);
                     }
 
-                    if(!Connected)
-                    {
-                        break;
-                    }
+                    //if(!Connected)
+                    //{
+                    //    break;
+                    //}
 
                     Thread.Sleep(3000);
                 }
@@ -84,6 +84,8 @@ namespace Pyraminx.Robot
             if(!Connected)
                 throw new Exception("Robot is not connected");
 
+            Logger.Debug("RobotConenction.Execute " + cmd);
+
             SetBusy(true);
             var response = await RestHelper.Get(Url + "/execute/" + cmd);
             SetBusy(false);
@@ -101,6 +103,8 @@ namespace Pyraminx.Robot
 
             if (!Connected)
                 throw new Exception("Robot is not connected");
+
+            Logger.Debug("RobotConenction.Flip " + cmd);
 
             SetBusy(true);
             var response = await RestHelper.Get(Url + "/flip/" + cmd);

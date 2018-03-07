@@ -1,11 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.IO;
 using Android.App;
 using Android.Content;
 using Android.OS;
 using Pyraminx.App.Misc;
 using Pyraminx.Core;
 using Pyraminx.Robot;
-using Pyraminx.Scanner;
+using Pyraminx.Solver;
+using Environment = Android.OS.Environment;
 
 namespace Pyraminx.App.Service
 {
@@ -31,8 +33,21 @@ namespace Pyraminx.App.Service
             Logger.Debug("PyraminxService.OnCreate");
             base.OnCreate();
 
-            Robot = new RobotConnection(Logger);
-            Solution = new SolutionProcedure(Robot);
+            try
+            {
+                Robot = new RobotConnection(Logger);
+                Robot.Connect();
+
+                var db = Path.Combine(Environment.ExternalStorageDirectory.AbsolutePath, "solutions.db");
+                var solver = new PyraminxSolver {Logger = Logger, DatabasePath = db};
+                Solution = new SolutionProcedure(Logger) { Robot = Robot, Solver = solver };
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)

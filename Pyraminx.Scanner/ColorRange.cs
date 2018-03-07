@@ -26,15 +26,15 @@ namespace Pyraminx.Scanner
         public static readonly ColorRange Yellow = new ColorRange
         {
             Label = FaceColor.Yellow,
-            Lower = new Scalar(25, 80, 60, 255),
-            Upper = new Scalar(40, 255, 255, 255),
+            Lower = new Scalar(30, 80, 60, 255),
+            Upper = new Scalar(50, 255, 255, 255),
             Rgba = new Scalar(255, 255, 0, 255)
         };
         public static readonly ColorRange Orange = new ColorRange
         {
             Label = FaceColor.Orange,
             Lower = new Scalar(0, 80, 100, 255),
-            Upper = new Scalar(25, 255, 255, 255),
+            Upper = new Scalar(30, 255, 255, 255),
             Rgba = new Scalar(255, 127, 0, 255)
         };
         public static readonly ColorRange Green = new ColorRange

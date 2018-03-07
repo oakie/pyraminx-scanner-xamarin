@@ -14,16 +14,17 @@ namespace Pyraminx.App.Misc
     public class CameraViewAdapter : BaseLoaderCallback, PortraitCameraBridgeViewBase.ICvCameraViewListener2
     {
         protected Context Context;
-        protected PortraitCameraBridgeViewBase View;
+        protected PortraitCameraView View;
         protected IFaceScanner Scanner;
 
         public event OnScanResult OnScanResult;
         public bool EnableProcessing { get; set; }
 
-        public CameraViewAdapter(Context context, PortraitCameraBridgeViewBase view) : base(context)
+        public CameraViewAdapter(Context context, PortraitCameraView view) : base(context)
         {
             Context = context;
             View = view;
+            View.ScaleFactor = 0.5;
             View.SetCvCameraViewListener(this);
             View.EnableFpsMeter();
         }

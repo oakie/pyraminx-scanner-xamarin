@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Android.OS;
 using Android.Support.V4.App;
 using Android.Views;
 using Pyraminx.Common;
+using Pyraminx.Core;
 using Fragment = Android.Support.V4.App.Fragment;
 using FragmentManager = Android.Support.V4.App.FragmentManager;
 using Object = Java.Lang.Object;
@@ -13,6 +15,7 @@ namespace Pyraminx.App.Views
     {
         protected delegate BaseFragment FactoryMethod();
 
+        protected ILogger Logger { get; set; }
         protected BaseFragment Current, Previous;
 
         protected static FactoryMethod[] Factories =
@@ -31,11 +34,14 @@ namespace Pyraminx.App.Views
 
         public override int Count => Factories.Length;
 
-        public TabPagerAdapter(FragmentManager fm) : base(fm) { }
+        public TabPagerAdapter(ILogger logger, FragmentManager fm) : base(fm)
+        {
+            Logger = logger;
+        }
 
         public override Fragment GetItem(int position)
         {
-            Utils.Log("TabPagerAdapter.GetItem " + position);
+            Logger.Debug("TabPagerAdapter.GetItem " + position);
             Fragments[position] = Factories[position]();
 
             if (Current == null)
@@ -51,7 +57,7 @@ namespace Pyraminx.App.Views
 
         public override void DestroyItem(ViewGroup container, int position, Object @object)
         {
-            Utils.Log("TabPagerAdapter.DestroyItem: " + position);
+            Logger.Debug("TabPagerAdapter.DestroyItem: " + position);
             //var fragment = (Fragment) @object;
             //var mgr = fragment.FragmentManager;
             //var tx = mgr.BeginTransaction();
@@ -69,7 +75,7 @@ namespace Pyraminx.App.Views
 
         public void OnPageSelected(int position)
         {
-            Utils.Log("TabPagerAdapter.OnPageSelected " + position);
+            Logger.Debug("TabPagerAdapter.OnPageSelected " + position);
 
             Previous = Current;
             Current = Fragments[position];

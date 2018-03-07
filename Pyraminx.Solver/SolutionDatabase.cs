@@ -16,15 +16,20 @@ namespace Pyraminx.Solver
         public string Sequence { get; set; }
     }
 
-    public static class SolutionDatabase
+    public class SolutionDatabase
     {
-        public static async Task<string> FindSolution(string path, string state)
-        {
-            
-            var db = new SQLiteAsyncConnection(path);
-            var result = db.Table<Solution>().Where(x => x.State == state);
+        public string DatabasePath { get; set; }
 
-            if(await result.CountAsync() == 0)
+        protected SQLiteAsyncConnection Connection { get; set; }
+
+        public async Task<string> FindSolution(string state)
+        {
+            if(Connection == null)
+                Connection = new SQLiteAsyncConnection(DatabasePath);
+
+            var result = Connection.Table<Solution>().Where(x => x.State == state);
+
+            if (await result.CountAsync() == 0)
                 return null;
 
             var solution = await result.FirstOrDefaultAsync();

@@ -12,26 +12,26 @@ namespace Pyraminx.App.Views
 
         public new static BaseFragment Create()
         {
-            Utils.Log("SolverFragment.Create");
+            Logger.Debug("SolverFragment.Create");
             return new SolverFragment();
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            Utils.Log("SolverFragment.OnCreateView");
+            Logger.Debug("SolverFragment.OnCreateView");
             var root = base.OnCreateView(inflater, container, savedInstanceState);
             return root;
         }
 
         public override void OnResumeFragment()
         {
-            Utils.Log("SolverFragment.OnResume");
+            Logger.Debug("SolverFragment.OnResume");
             base.OnResumeFragment();
         }
 
         public override void OnPauseFragment()
         {
-            Utils.Log("SolverFragment.OnPause");
+            Logger.Debug("SolverFragment.OnPause");
             base.OnPauseFragment();
         }
     }

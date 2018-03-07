@@ -47,6 +47,8 @@ namespace Pyraminx.App.Views
         protected Camera SelectedCamera;
         protected SurfaceTexture SurfaceTexture;
 
+        public double ScaleFactor { get; set; } = 1;
+
         public PortraitCameraView(Context context, int cameraId) : base(context, cameraId) { }
 
         public PortraitCameraView(Context context, IAttributeSet attrs) : base(context, attrs) { }
@@ -70,7 +72,7 @@ namespace Pyraminx.App.Views
                         return false;
 
                     /* Select the size that fits surface considering maximum size allowed */
-                    Size frameSize = CalculateCameraFrameSize(sizes.Select(x => new Size(x.Width, x.Height)), width, height);
+                    Size frameSize = CalculateCameraFrameSize(sizes.Select(x => new Size(x.Width, x.Height)), (int)(ScaleFactor * width), (int)(ScaleFactor * height));
 
                     p.PreviewFormat = ImageFormatType.Nv21;
                     Utils.Log("Set preview size to " + (int)frameSize.Width + "x" + (int)frameSize.Height);

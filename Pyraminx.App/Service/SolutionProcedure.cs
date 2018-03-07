@@ -4,28 +4,41 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Pyraminx.Common;
+using Pyraminx.Core;
 using Pyraminx.Robot;
 using Pyraminx.Scanner;
 using Pyraminx.Solver;
-using Pyraminx = Pyraminx.Core.Pyraminx;
 
 namespace Pyraminx.App.Service
 {
+    public enum SolutionState { Start, Init, Scan, Solve, Exec, Done }
+
+    public delegate void OnSolutionProgress(SolutionState state);
+
     public class SolutionProcedure
     {
-        protected Core.Pyraminx Model { get; set; }
-        protected RobotConnection Robot { get; set; }
-        protected PyraminxSolver Solver { get; set; }
+        protected string[] FlipSequence => new[] { null, "w+", "w+", "z-" };
+        protected ILogger Logger { get; set; }
+
+        public RobotConnection Robot { get; set; }
+        public PyraminxSolver Solver { get; set; }
 
         protected List<IEnumerable<Facelet>> FaceScans { get; set; }
+        protected Core.Pyraminx Model { get; set; }
         protected string Solution { get; set; }
+
+        public event OnSolutionProgress OnSolutionProgress;
 
         public bool NeedsFaceScan { get; protected set; }
         protected object SyncObject = new object();
+        protected Thread WorkerThread { get; set; }
+        public bool InProgress => WorkerThread != null;
+        public SolutionState CurrentState { get; protected set; }
 
-        public SolutionProcedure(RobotConnection robot)
+        public SolutionProcedure(ILogger logger)
         {
-            Robot = robot;
+            Logger = logger;
+            CurrentState = SolutionState.Start;
         }
 
         public void SubmitFaceScan(IEnumerable<Facelet> facelets)
@@ -38,94 +51,114 @@ namespace Pyraminx.App.Service
             }
         }
 
+        protected void SetState(SolutionState state)
+        {
+            CurrentState = state;
+            OnSolutionProgress?.Invoke(state);
+        }
+
         public void Run()
         {
+            if (InProgress)
+                throw new Exception("Solution procedure is already in progress!");
+
+            SetState(SolutionState.Init);
+
+            Solution = null;
             Model = new Core.Pyraminx();
-            Solver = new PyraminxSolver();
             FaceScans = new List<IEnumerable<Facelet>>();
 
-            if(!Robot.Connected)
+            if (!Robot.Connected)
             {
                 Utils.Toast("Robot is not connected");
                 return;
             }
 
-            var t = new Thread(async () =>
+            WorkerThread = new Thread(async () =>
             {
-                Utils.Log("starting scan procedure");
-                await ExecuteScan();
+                Logger.Debug("starting scan procedure");
+                try
+                {
+                    await ScanFaces();
+                    SaveFaces();
 
-                StoreFacelets(FaceScans[0]);
-                Utils.Log(string.Join(", ", FaceScans[0].Select(x => x.Matches[0].Label)));
-                Utils.Log(Model.ToString());
+                    await FindSolution();
 
-                Model.Flip("w+");
+                    if (Solution == null)
+                    {
+                        Finish();
+                        return;
+                    }
 
-                StoreFacelets(FaceScans[1]);
-                Utils.Log(string.Join(", ", FaceScans[1].Select(x => x.Matches[0].Label)));
-                Utils.Log(Model.ToString());
+                    if (Solution.Length > 0)
+                        await ExecuteSolution();
 
-                Model.Flip("w+");
+                    Finish();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
 
-                StoreFacelets(FaceScans[2]);
-                Utils.Log(string.Join(", ", FaceScans[2].Select(x => x.Matches[0].Label)));
-                Utils.Log(Model.ToString());
-
-                Model.Flip("z-");
-
-                StoreFacelets(FaceScans[3]);
-                Utils.Log(string.Join(", ", FaceScans[3].Select(x => x.Matches[0].Label)));
-                Utils.Log(Model.ToString());
+                Finish();
             });
-            t.Start();
+            WorkerThread.Start();
         }
 
-        protected async Task ExecuteScan()
+        protected void Finish()
         {
-            try
+            WorkerThread = null;
+            SetState(SolutionState.Done);
+        }
+
+        protected async Task ScanFaces()
+        {
+            foreach (var flip in FlipSequence)
             {
+                SetState(SolutionState.Scan);
+                if (flip != null)
+                    await Robot.Flip(flip);
+
+                // wait for camera focus
                 await Task.Delay(1000);
-                lock (SyncObject)
-                {
-                    NeedsFaceScan = true;
-                    Utils.Log("waiting for frame");
-                    Monitor.Wait(SyncObject);
-                }
-
-                await Robot.Flip("w+");
-
-                await Task.Delay(1000);
-                lock (SyncObject)
-                {
-                    NeedsFaceScan = true;
-                    Utils.Log("waiting for frame");
-                    Monitor.Wait(SyncObject);
-                }
-
-                await Robot.Flip("w+");
-
-                await Task.Delay(1000);
-                lock (SyncObject)
-                {
-                    NeedsFaceScan = true;
-                    Utils.Log("waiting for frame");
-                    Monitor.Wait(SyncObject);
-                }
-
-                await Robot.Flip("z-");
-
-                await Task.Delay(1000);
-                lock (SyncObject)
-                {
-                    NeedsFaceScan = true;
-                    Utils.Log("waiting for frame");
-                    Monitor.Wait(SyncObject);
-                }
+                ScanFace();
             }
-            catch(Exception e)
+        }
+
+        protected void ScanFace()
+        {
+            lock (SyncObject)
             {
-                Utils.Log(e.ToString());
+                NeedsFaceScan = true;
+                Logger.Debug("waiting for frame");
+                Monitor.Wait(SyncObject);
+                Logger.Debug(string.Join(", ", FaceScans.Last().Select(x => x.Matches[0].Label)));
             }
+        }
+
+        protected void SaveFaces()
+        {
+            StoreFacelets(FaceScans[0]);
+            Logger.Debug(string.Join(", ", FaceScans[0].Select(x => x.Matches[0].Label)));
+            Logger.Debug(Model.ToString());
+
+            Model.Flip("w+");
+
+            StoreFacelets(FaceScans[1]);
+            Logger.Debug(string.Join(", ", FaceScans[1].Select(x => x.Matches[0].Label)));
+            Logger.Debug(Model.ToString());
+
+            Model.Flip("w+");
+
+            StoreFacelets(FaceScans[2]);
+            Logger.Debug(string.Join(", ", FaceScans[2].Select(x => x.Matches[0].Label)));
+            Logger.Debug(Model.ToString());
+
+            Model.Flip("z-");
+
+            StoreFacelets(FaceScans[3]);
+            Logger.Debug(string.Join(", ", FaceScans[3].Select(x => x.Matches[0].Label)));
+            Logger.Debug(Model.ToString());
         }
 
         protected void StoreFacelets(IEnumerable<Facelet> facelets)
@@ -144,12 +177,15 @@ namespace Pyraminx.App.Service
 
         public async Task FindSolution()
         {
-            var state = Model.Serialize();
-            Solution = await Solver.FindSolution(state);
+            Logger.Debug("SolutionProcedure.FindSolution");
+            SetState(SolutionState.Solve);
+            Solution = await Solver.FindSolution(Model);
         }
 
         public async Task ExecuteSolution()
         {
+            Logger.Debug("SolutionProcedure.ExecuteSolution");
+            SetState(SolutionState.Exec);
             await Robot.Execute(Solution);
         }
     }

@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <include
-        android:id="@+id/Toolbar"
-        layout="@layout/Toolbar" />
-    <android.support.v4.view.ViewPager
-        android:id="@+id/TabPager"
+  <include
+      android:id="@+id/Toolbar"
+      layout="@layout/Toolbar"
+      android:layout_alignParentTop="true" />
+  <android.support.v4.view.ViewPager
+      android:id="@+id/TabPager"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+    android:layout_below="@+id/Toolbar"
+    android:layout_above="@+id/StartProcedureBtn">
+    <android.support.v4.view.PagerTabStrip
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <android.support.v4.view.PagerTabStrip
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Pager"
-          android:textAppearance="@style/Pager" />
-    </android.support.v4.view.ViewPager>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        style="@style/Pager"
+      android:textAppearance="@style/Pager" />
+  </android.support.v4.view.ViewPager>
+
+  <Button
+    style="@style/Button"
+    android:text="Start"
+    android:id="@+id/StartProcedureBtn"
+    android:layout_alignParentBottom="true"/>
+</RelativeLayout>

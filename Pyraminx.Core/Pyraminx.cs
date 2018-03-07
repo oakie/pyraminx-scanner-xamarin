@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Android.Speech;
+using Java.Lang;
+using Exception = System.Exception;
+using StringBuilder = System.Text.StringBuilder;
 
 namespace Pyraminx.Core
 {
@@ -10,11 +12,12 @@ namespace Pyraminx.Core
     {
         public Axis TipW { get; set; }
         public Axis TipX { get; set; }
+
+        public int Hash => ((int) TipW << 4) + ((int) TipX << 0);
     }
 
     public class Pyraminx
     {
-
         protected static readonly Dictionary<Axis, List<Axis>> AxialOffset = new Dictionary<Axis, List<Axis>> {
             { Axis.W, new List<Axis> {Axis.X, Axis.Z, Axis.Y } },
             { Axis.X, new List<Axis> {Axis.W, Axis.Y, Axis.Z } },
@@ -24,12 +27,20 @@ namespace Pyraminx.Core
 
         public readonly Polyhedron[,,,] Polys = new Polyhedron[3, 3, 3, 3];
 
-        public PyraminxTransform Transform =>
-            new PyraminxTransform
+        public PyraminxTransform GetTransform()
+        {
+            var w = Polys[2, 0, 0, 0].MissingColors;
+            var x = Polys[0, 2, 0, 0].MissingColors;
+
+            if(!w.Any() || !x.Any())
+                throw new Exception("Invalid pyraminx state! Cannot calculate transform.");
+
+            return new PyraminxTransform
             {
-                TipW = Polyhedron.ColorAxisMap[Polys[2, 0, 0, 0].MissingColors.First()],
-                TipX = Polyhedron.ColorAxisMap[Polys[0, 2, 0, 0].MissingColors.First()]
+                TipW = Polyhedron.ColorAxisMap[w.First()],
+                TipX = Polyhedron.ColorAxisMap[x.First()],
             };
+        }
 
         public Pyraminx()
         {

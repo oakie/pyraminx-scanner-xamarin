@@ -24,9 +24,9 @@ namespace Pyraminx.Core
 
         public static bool operator ==(FaceColor lhs, FaceColor rhs)
         {
-            if (lhs == null && rhs == null)
+            if (lhs is null && rhs is null)
                 return true;
-            if (lhs == null || rhs == null)
+            if (lhs is null || rhs is null)
                 return false;
             return lhs.Value == rhs.Value;
         }
@@ -38,9 +38,9 @@ namespace Pyraminx.Core
 
         public override bool Equals(object obj)
         {
-            if(obj == null || obj.GetType() != typeof(FaceColor))
+            if (obj == null || obj.GetType() != typeof(FaceColor))
                 return false;
-            return (FaceColor) obj == this;
+            return (FaceColor)obj == this;
         }
 
         public override int GetHashCode()

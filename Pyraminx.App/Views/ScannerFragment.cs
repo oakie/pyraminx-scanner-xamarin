@@ -24,12 +24,12 @@ namespace Pyraminx.App.Views
             Utils.Log("ScannerFragment.OnCreateView");
             var root = base.OnCreateView(inflater, container, bundle);
 
-            var camera = root.FindViewById<PortraitCameraBridgeViewBase>(Resource.Id.CameraView);
+            var camera = root.FindViewById<PortraitCameraView>(Resource.Id.CameraView);
             CameraAdapter = new CameraViewAdapter(Context, camera);
             CameraAdapter.OnScanResult += (facelets) =>
             {
-                var str = string.Join(", ", facelets.Select(x => x.Matches.FirstOrDefault()?.Label));
-                Activity.RunOnUiThread(() => Utils.Log("Result: " + str));
+                //var str = string.Join(", ", facelets.Select(x => x.Matches.FirstOrDefault()?.Label));
+                //Activity.RunOnUiThread(() => Utils.Log("Result: " + str));
 
                 if (ServiceBound && Service.Solution.NeedsFaceScan)
                     Service.Solution.SubmitFaceScan(facelets);

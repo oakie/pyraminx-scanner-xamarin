@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Android.Runtime;
 using OpenCV.ImgProc;
-using FaceColor = Pyraminx.Core.FaceColor;
 
 namespace Pyraminx.Scanner
 {
@@ -12,20 +9,23 @@ namespace Pyraminx.Scanner
     public class StaticFaceScanner : IFaceScanner
     {
         protected Mat WorkMat { get; set; }
-        protected List<Facelet> Facelets = Facelet.GenerateFacelets();
+        protected List<Facelet> Facelets;
+        protected Point[] Corners { get; set; }
 
         public StaticFaceScanner(Size resolution)
         {
             WorkMat = new Mat(resolution, CvType.Cv8uc3);
+            Corners = Facelet.WarpedAnchors.Select(ScaledPoint).ToArray();
         }
 
         public IEnumerable<Facelet> Process(Mat rgba)
         {
+            Facelets = Facelet.GenerateFacelets();
             Imgproc.CvtColor(rgba, WorkMat, Imgproc.ColorRgba2rgb);
             Imgproc.CvtColor(WorkMat, WorkMat, Imgproc.ColorRgb2hsv);
 
             var src = new MatOfPoint2f(Facelet.Anchors[0], Facelet.Anchors[1], Facelet.Anchors[2]);
-            var dst = new MatOfPoint2f(Facelet.WarpedAnchors[0], Facelet.WarpedAnchors[1], Facelet.WarpedAnchors[2]);
+            var dst = new MatOfPoint2f(Corners);
             var warp = Imgproc.GetAffineTransform(src, dst);
 
             var centers = new MatOfPoint2f(Facelets.SelectMany(x => x.Corners).ToArray());
@@ -58,11 +58,17 @@ namespace Pyraminx.Scanner
                 Imgproc.Circle(rgba, facelet.WarpedCenter, 20, new Scalar(255, 255, 255, 255), 2);
             }
 
-            Imgproc.Line(rgba, Facelet.WarpedAnchors[0], Facelet.WarpedAnchors[1], new Scalar(255, 255, 0, 255));
-            Imgproc.Line(rgba, Facelet.WarpedAnchors[1], Facelet.WarpedAnchors[2], new Scalar(255, 255, 0, 255));
-            Imgproc.Line(rgba, Facelet.WarpedAnchors[2], Facelet.WarpedAnchors[0], new Scalar(255, 255, 0, 255));
+            Imgproc.Line(rgba, Corners[0], Corners[1], new Scalar(255, 255, 0, 255));
+            Imgproc.Line(rgba, Corners[1], Corners[2], new Scalar(255, 255, 0, 255));
+            Imgproc.Line(rgba, Corners[2], Corners[0], new Scalar(255, 255, 0, 255));
 
             return Facelets;
+        }
+
+        protected Point ScaledPoint(Point normalized)
+        {
+            var size = WorkMat.Size();
+            return new Point(size.Width * normalized.X, size.Height * normalized.Y);
         }
 
         public void Dispose()

@@ -74,6 +74,7 @@ namespace Pyraminx.App.Views
             if (ServiceBound)
             {
                 Service.Robot.OnConnectedChanged -= OnRobotConnectionChanged;
+                Service.Solution.OnSolutionProgress -= OnSolutionProgress;
 
                 ApplicationContext.UnbindService(this);
                 OnServiceDisconnected(null);
@@ -127,6 +128,8 @@ namespace Pyraminx.App.Views
             });
         }
 
+        protected virtual void OnSolutionProgress(SolutionState state) { }
+
         public virtual void OnServiceConnected(ComponentName name, IBinder service)
         {
             Logger.Debug("BaseActivity.OnServiceConnected");
@@ -140,6 +143,9 @@ namespace Pyraminx.App.Views
 
             Service.Robot.OnConnectedChanged += OnRobotConnectionChanged;
             OnRobotConnectionChanged(Service.Robot.Connected);
+
+            Service.Solution.OnSolutionProgress += OnSolutionProgress;
+            OnSolutionProgress(Service.Solution.CurrentState);
         }
 
         public virtual void OnServiceDisconnected(ComponentName name)

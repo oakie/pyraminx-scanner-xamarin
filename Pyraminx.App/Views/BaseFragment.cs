@@ -2,7 +2,9 @@
 using Android.OS;
 using Android.Support.V4.App;
 using Android.Views;
+using Pyraminx.App.Misc;
 using Pyraminx.App.Service;
+using Pyraminx.Core;
 
 namespace Pyraminx.App.Views
 {
@@ -10,6 +12,7 @@ namespace Pyraminx.App.Views
     {
         protected abstract int Layout { get; }
         public static string Title => "Base Fragment";
+        protected static ILogger Logger = new Logger();
 
         public static BaseFragment Create()
         {

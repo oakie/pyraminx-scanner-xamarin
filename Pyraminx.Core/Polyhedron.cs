@@ -3,30 +3,30 @@ using System.Linq;
 
 namespace Pyraminx.Core
 {
-    public enum Axis { W, X, Y, Z };
+    public enum Axis { W = 1, X = 2, Y = 4, Z = 8 };
     public enum Direction { None, Pos, Neg }
 
     public class Polyhedron
     {
         public FaceColor W
         {
-            get { return Faces[Axis.W]; }
-            set { Faces[Axis.W] = value; }
+            get => Faces[Axis.W];
+            set => Faces[Axis.W] = value;
         }
         public FaceColor X
         {
-            get { return Faces[Axis.X]; }
-            set { Faces[Axis.X] = value; }
+            get => Faces[Axis.X];
+            set => Faces[Axis.X] = value;
         }
         public FaceColor Y
         {
-            get { return Faces[Axis.Y]; }
-            set { Faces[Axis.Y] = value; }
+            get => Faces[Axis.Y];
+            set => Faces[Axis.Y] = value;
         }
         public FaceColor Z
         {
-            get { return Faces[Axis.Z]; }
-            set { Faces[Axis.Z] = value; }
+            get => Faces[Axis.Z];
+            set => Faces[Axis.Z] = value;
         }
 
         public readonly Dictionary<Axis, FaceColor> Faces = new Dictionary<Axis, FaceColor>
@@ -45,8 +45,8 @@ namespace Pyraminx.Core
         public IEnumerable<FaceColor> MissingColors
         {
             get {
-                var colors = new List<FaceColor>(FaceColor.AsEnumerable);
-                return colors.Where(x => !colors.Contains(x));
+                var values = Colors.Select(x => x.Value).ToList();
+                return FaceColor.AsEnumerable.Where(x => !values.Contains(x.Value));
             }
         }
 
@@ -79,6 +79,32 @@ namespace Pyraminx.Core
         public override string ToString()
         {
             return $"[{W}{X}{Y}{Z}]";
+        }
+
+        public void Turn(string cmd)
+        {
+            var direction = cmd[1] == '+' ? Direction.Pos : Direction.Neg;
+            var axis = char.ToLower(cmd[0]);
+            if (axis == 'w')
+                TurnW(direction);
+            if (axis == 'x')
+                TurnX(direction);
+            if (axis == 'y')
+                TurnY(direction);
+            if (axis == 'z')
+                TurnZ(direction);
+        }
+
+        public void Turn(Axis axis, Direction direction)
+        {
+            if(axis == Axis.W)
+                TurnW(direction);
+            if (axis == Axis.X)
+                TurnX(direction);
+            if (axis == Axis.Y)
+                TurnY(direction);
+            if (axis == Axis.Z)
+                TurnZ(direction);
         }
 
         public void TurnW(Direction direction)

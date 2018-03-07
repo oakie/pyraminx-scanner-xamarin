@@ -25,7 +25,11 @@ namespace Pyraminx.Scanner
         };
 
         public static List<Point> Anchors = new List<Point> { Vertices[0], Vertices[6], Vertices[9] };
-        public static List<Point> WarpedAnchors = new List<Point> { new Point(100, 220), new Point(510, 820), new Point(800, 180) };
+        public static List<Point> WarpedAnchors = new List<Point> {
+            new Point(100.0 / 1440, 220.0 / 1080),
+            new Point(510.0 / 1440, 820.0 / 1080),
+            new Point(800.0 / 1440, 180.0 / 1080)
+        };
 
         public List<Point> Corners { get; protected set; }
         public List<Point> WarpedCorners { get; set; }
