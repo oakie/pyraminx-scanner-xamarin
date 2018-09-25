@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <declare-styleable name="FaceTile">
+    <attr name="tip_u" format="string" />
+    <attr name="tip_l" format="string" />
+    <attr name="tip_r" format="string" />
+  </declare-styleable>
+</resources>

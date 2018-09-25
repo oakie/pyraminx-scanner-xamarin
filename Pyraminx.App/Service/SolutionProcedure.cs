@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Pyraminx.Common;
+﻿using Pyraminx.Common;
 using Pyraminx.Core;
 using Pyraminx.Robot;
 using Pyraminx.Scanner;
 using Pyraminx.Solver;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Pyraminx.App.Service
 {
     public enum SolutionState { Start, Init, Scan, Solve, Exec, Done }
+    public enum RunMode { Continuous, Halted }
 
-    public delegate void OnSolutionProgress(SolutionState state);
+    public delegate void OnProgressUpdate(SolutionState state);
+    public delegate void OnModelUpdate(Core.Pyraminx pyraminx);
+    public delegate void OnSolutionUpdate(string solution);
 
     public class SolutionProcedure
     {
@@ -24,16 +27,23 @@ namespace Pyraminx.App.Service
         public PyraminxSolver Solver { get; set; }
 
         protected List<IEnumerable<Facelet>> FaceScans { get; set; }
-        protected Core.Pyraminx Model { get; set; }
-        protected string Solution { get; set; }
+        public Core.Pyraminx Model { get; protected set; }
+        public string Solution { get; protected set; }
 
-        public event OnSolutionProgress OnSolutionProgress;
+        public event OnProgressUpdate OnProgressUpdate;
+        public event OnModelUpdate OnModelUpdate;
+        public event OnSolutionUpdate OnSolutionUpdate;
 
-        public bool NeedsFaceScan { get; protected set; }
-        protected object SyncObject = new object();
+        public bool AwaitingFaceScan { get; protected set; }
+        protected object ScanSyncObject = new object();
+        public bool AwaitingGoAhead { get; protected set; }
+        protected object HaltSyncObject = new object();
+
         protected Thread WorkerThread { get; set; }
         public bool InProgress => WorkerThread != null;
+
         public SolutionState CurrentState { get; protected set; }
+        public RunMode CurrentMode { get; protected set; }
 
         public SolutionProcedure(ILogger logger)
         {
@@ -41,32 +51,44 @@ namespace Pyraminx.App.Service
             CurrentState = SolutionState.Start;
         }
 
-        public void SubmitFaceScan(IEnumerable<Facelet> facelets)
+        public void DeliverFaceScan(IEnumerable<Facelet> facelets)
         {
-            lock (SyncObject)
+            lock (ScanSyncObject)
             {
                 FaceScans.Add(facelets);
-                NeedsFaceScan = false;
-                Monitor.Pulse(SyncObject);
+                AwaitingFaceScan = false;
+                Monitor.Pulse(ScanSyncObject);
+            }
+        }
+
+        public void DeliverGoAhead()
+        {
+            lock (HaltSyncObject)
+            {
+                AwaitingGoAhead = false;
+                Monitor.Pulse(HaltSyncObject);
             }
         }
 
         protected void SetState(SolutionState state)
         {
             CurrentState = state;
-            OnSolutionProgress?.Invoke(state);
+            OnProgressUpdate?.Invoke(state);
         }
 
-        public void Run()
+        public void Run(RunMode mode = RunMode.Continuous)
         {
             if (InProgress)
                 throw new Exception("Solution procedure is already in progress!");
 
+            CurrentMode = mode;
             SetState(SolutionState.Init);
-
             Solution = null;
             Model = new Core.Pyraminx();
             FaceScans = new List<IEnumerable<Facelet>>();
+
+            OnModelUpdate?.Invoke(Model);
+            OnSolutionUpdate?.Invoke(Solution);
 
             if (!Robot.Connected)
             {
@@ -79,10 +101,17 @@ namespace Pyraminx.App.Service
                 Logger.Debug("starting scan procedure");
                 try
                 {
-                    await ScanFaces();
-                    SaveFaces();
+                    foreach (var flip in FlipSequence)
+                    {
+                        AwaitGoAhead();
+                        await ScanFace(flip);
+                    }
+
+                    ClassifyFaces();
+                    AwaitGoAhead();
 
                     await FindSolution();
+                    AwaitGoAhead();
 
                     if (Solution == null)
                     {
@@ -92,12 +121,10 @@ namespace Pyraminx.App.Service
 
                     if (Solution.Length > 0)
                         await ExecuteSolution();
-
-                    Finish();
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Logger.Debug(e.ToString());
                 }
 
                 Finish();
@@ -107,36 +134,48 @@ namespace Pyraminx.App.Service
 
         protected void Finish()
         {
+            Logger.Debug("Finish solution procedure");
             WorkerThread = null;
             SetState(SolutionState.Done);
         }
 
-        protected async Task ScanFaces()
+        protected async Task ScanFace(string flip)
         {
-            foreach (var flip in FlipSequence)
-            {
-                SetState(SolutionState.Scan);
-                if (flip != null)
-                    await Robot.Flip(flip);
+            SetState(SolutionState.Scan);
+            if (flip != null)
+                await Robot.Flip(flip);
 
-                // wait for camera focus
-                await Task.Delay(1000);
-                ScanFace();
+            // wait for camera focus
+            await Task.Delay(1000);
+            AwaitCameraFrame();
+        }
+
+        protected void AwaitGoAhead()
+        {
+            if (CurrentMode == RunMode.Continuous)
+                return;
+
+            lock (HaltSyncObject)
+            {
+                AwaitingGoAhead = true;
+                OnProgressUpdate?.Invoke(CurrentState);
+                Logger.Debug("waiting for go-ahead");
+                Monitor.Wait(HaltSyncObject);
             }
         }
 
-        protected void ScanFace()
+        protected void AwaitCameraFrame()
         {
-            lock (SyncObject)
+            lock (ScanSyncObject)
             {
-                NeedsFaceScan = true;
+                AwaitingFaceScan = true;
                 Logger.Debug("waiting for frame");
-                Monitor.Wait(SyncObject);
+                Monitor.Wait(ScanSyncObject);
                 Logger.Debug(string.Join(", ", FaceScans.Last().Select(x => x.Matches[0].Label)));
             }
         }
 
-        protected void SaveFaces()
+        protected void ClassifyFaces()
         {
             StoreFacelets(FaceScans[0]);
             Logger.Debug(string.Join(", ", FaceScans[0].Select(x => x.Matches[0].Label)));
@@ -159,6 +198,8 @@ namespace Pyraminx.App.Service
             StoreFacelets(FaceScans[3]);
             Logger.Debug(string.Join(", ", FaceScans[3].Select(x => x.Matches[0].Label)));
             Logger.Debug(Model.ToString());
+
+            OnModelUpdate?.Invoke(Model);
         }
 
         protected void StoreFacelets(IEnumerable<Facelet> facelets)
@@ -180,6 +221,7 @@ namespace Pyraminx.App.Service
             Logger.Debug("SolutionProcedure.FindSolution");
             SetState(SolutionState.Solve);
             Solution = await Solver.FindSolution(Model);
+            OnSolutionUpdate?.Invoke(Solution);
         }
 
         public async Task ExecuteSolution()

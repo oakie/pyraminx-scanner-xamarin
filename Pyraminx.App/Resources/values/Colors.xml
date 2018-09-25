@@ -8,5 +8,5 @@
   <color name="color_primary_dark">#363636</color>
 
   <!--   a secondary color for controls like checkboxes and text fields -->
-  <color name="color_accent">#003333</color>
+  <color name="color_accent">#00ECEC</color>
 </resources>

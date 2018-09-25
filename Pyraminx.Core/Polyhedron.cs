@@ -37,6 +37,8 @@ namespace Pyraminx.Core
             { Axis.Z, FaceColor.Undefined }
         };
 
+        public static IEnumerable<Axis> Axes => new[] { Axis.W, Axis.X, Axis.Y, Axis.Z };
+
         public IEnumerable<FaceColor> Colors
         {
             get { return Faces.Values.Where(x => x != FaceColor.Undefined); }
@@ -97,7 +99,7 @@ namespace Pyraminx.Core
 
         public void Turn(Axis axis, Direction direction)
         {
-            if(axis == Axis.W)
+            if (axis == Axis.W)
                 TurnW(direction);
             if (axis == Axis.X)
                 TurnX(direction);

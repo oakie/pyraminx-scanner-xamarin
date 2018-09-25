@@ -15,7 +15,7 @@ namespace Pyraminx.App.Views
         protected override string Header => "Pyraminx";
 
         protected ViewPager Pager;
-        protected Button StartBtn;
+        protected Button RunContinuousBtn, RunHaltedBtn, CancelBtn, ContinueBtn;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -26,27 +26,47 @@ namespace Pyraminx.App.Views
             Pager.Adapter = adapter;
             Pager.PageSelected += (sender, args) => adapter.OnPageSelected(args.Position);
 
-            StartBtn = FindViewById<Button>(Resource.Id.StartProcedureBtn);
-            StartBtn.Click += (sender, args) =>
+            RunContinuousBtn = FindViewById<Button>(Resource.Id.RunContinuousBtn);
+            RunContinuousBtn.Click += (sender, args) =>
             {
-                Logger.Debug("StartBtn.Click");
+                Logger.Debug("RunContinuousBtn.Click");
                 if(ServiceBound && !Service.Solution.InProgress)
-                    Service.Solution.Run();
+                    Service.Solution.Run(RunMode.Continuous);
             };
-            StartBtn.Enabled = ServiceBound && !Service.Solution.InProgress;
+            RunContinuousBtn.Enabled = ServiceBound && !Service.Solution.InProgress;
+
+            RunHaltedBtn = FindViewById<Button>(Resource.Id.RunHaltedBtn);
+            RunHaltedBtn.Click += (sender, args) =>
+            {
+                Logger.Debug("RunHaltedBtn.Click");
+                if (ServiceBound && !Service.Solution.InProgress)
+                    Service.Solution.Run(RunMode.Halted);
+            };
+            RunContinuousBtn.Enabled = ServiceBound && !Service.Solution.InProgress;
+
+            ContinueBtn = FindViewById<Button>(Resource.Id.ContinueBtn);
+            ContinueBtn.Click += (sender, args) =>
+            {
+                Logger.Debug("ContinueBtn.Click");
+                if(!ServiceBound || !Service.Solution.InProgress)
+                    return;
+                if(Service.Solution.CurrentMode == RunMode.Halted && Service.Solution.AwaitingGoAhead)
+                    Service.Solution.DeliverGoAhead();
+            };
+            ContinueBtn.Enabled = ServiceBound && Service.Solution.InProgress;
         }
 
-        protected override void OnSolutionProgress(SolutionState state)
+        protected override void OnProgressUpdate(SolutionState state)
         {
-            Logger.Debug("MainActivity.OnSolutionProgress " + state);
+            Logger.Debug("MainActivity.OnProgressUpdate " + state);
 
             RunOnUiThread(() =>
             {
-                if (state == SolutionState.Scan)
+                if(state == SolutionState.Scan)
                 {
                     Pager.SetCurrentItem(0, false);
                 }
-                else if (state == SolutionState.Exec)
+                else if(state == SolutionState.Exec)
                 {
                     Pager.SetCurrentItem(2, false);
                 }
@@ -55,7 +75,12 @@ namespace Pyraminx.App.Views
                     Pager.SetCurrentItem(1, false);
                 }
 
-                StartBtn.Enabled = state == SolutionState.Start || state == SolutionState.Done;
+                var idle = state == SolutionState.Start || state == SolutionState.Done;
+                var pending = !idle && Service.Solution.AwaitingGoAhead;
+
+                RunContinuousBtn.Enabled = state == SolutionState.Start || state == SolutionState.Done;
+                RunHaltedBtn.Enabled = state == SolutionState.Start || state == SolutionState.Done;
+                ContinueBtn.Enabled = pending;
             });
         }
     }

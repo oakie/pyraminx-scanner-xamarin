@@ -68,7 +68,7 @@ namespace Pyraminx.Scanner
         protected Point ScaledPoint(Point normalized)
         {
             var size = WorkMat.Size();
-            return new Point(size.Width * normalized.X, size.Height * normalized.Y);
+            return new Point(size.Height * normalized.X, size.Height * normalized.Y);
         }
 
         public void Dispose()

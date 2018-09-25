@@ -31,8 +31,8 @@ namespace Pyraminx.App.Views
                 //var str = string.Join(", ", facelets.Select(x => x.Matches.FirstOrDefault()?.Label));
                 //Activity.RunOnUiThread(() => Utils.Log("Result: " + str));
 
-                if (ServiceBound && Service.Solution.NeedsFaceScan)
-                    Service.Solution.SubmitFaceScan(facelets);
+                if (ServiceBound && Service.Solution.AwaitingFaceScan)
+                    Service.Solution.DeliverFaceScan(facelets);
             };
             CameraAdapter.EnableProcessing = true;
             CameraAdapter.Start();

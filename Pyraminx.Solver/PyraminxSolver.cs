@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Java.Lang;
 using Pyraminx.Core;
+using Exception = System.Exception;
+using Pyraminx = Pyraminx.Core.Pyraminx;
 
 namespace Pyraminx.Solver
 {
@@ -25,14 +28,20 @@ namespace Pyraminx.Solver
                 Logger.Debug("Search for solution...");
                 var solution = await Search(state);
 
-                if(solution == null)
+                if (solution == null)
                 {
                     Logger.Debug("No solution found!");
                     return null;
                 }
 
+                solution = TransformMoves(solution, transform[1]);
+
+                var tips = SolveTips(pyraminx);
+                if (!string.IsNullOrEmpty(tips))
+                    solution += ":" + tips;
+
                 Logger.Debug($"Found solution: {solution}");
-                return TransformMoves(solution, transform[1]);
+                return solution;
             }
             catch (Exception e)
             {
@@ -40,6 +49,23 @@ namespace Pyraminx.Solver
             }
 
             return null;
+        }
+
+        protected string SolveTips(Core.Pyraminx pyraminx)
+        {
+            var s = "";
+            foreach (var axis in Polyhedron.Axes)
+            {
+                var tip = pyraminx.GetTip(axis);
+                var axial = pyraminx.GetAxial(axis);
+                var offset = Core.Pyraminx.AxialOffset[axis];
+                if (tip.Faces[offset[0]] == axial.Faces[offset[1]])
+                    s += axis + "+";
+                if (tip.Faces[offset[0]] == axial.Faces[offset[2]])
+                    s += axis + "-";
+            }
+
+            return s.ToLower();
         }
 
         protected async Task<string> Search(Core.Pyraminx original)
@@ -61,7 +87,7 @@ namespace Pyraminx.Solver
                     return moves;
                 }
 
-                if(candidate.Item2.Length > 6)
+                if (candidate.Item2.Length > 6)
                     continue;
 
                 foreach (var prefix in permutations)

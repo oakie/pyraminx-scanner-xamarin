@@ -11,7 +11,7 @@ namespace Pyraminx.Robot
 
     public class RobotConnection
     {
-        public const string DefaultUrl = "192.168.0.22:5000";
+        public const string DefaultUrl = "192.168.0.17:5000";
 
         public event OnConnectedChanged OnConnectedChanged;
         public event OnBusyChanged OnBusyChanged;

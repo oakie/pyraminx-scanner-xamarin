@@ -1,10 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pmx="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
   <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="solver"/>
+      style="@style/HeaderStyle"
+      android:text="scanned faces" />
+  <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <pyraminx.app.views.FaceTile
+        android:id="@+id/FaceTileW"
+        pmx:tip_u="Z"
+        pmx:tip_l="Y"
+        pmx:tip_r="X"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+    <pyraminx.app.views.FaceTile
+        android:id="@+id/FaceTileX"
+        pmx:tip_u="W"
+        pmx:tip_l="Y"
+        pmx:tip_r="Z"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+    <pyraminx.app.views.FaceTile
+        android:id="@+id/FaceTileY"
+        pmx:tip_u="W"
+        pmx:tip_l="Z"
+        pmx:tip_r="X"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+    <pyraminx.app.views.FaceTile
+        android:id="@+id/FaceTileZ"
+        pmx:tip_u="W"
+        pmx:tip_l="X"
+        pmx:tip_r="Y"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+  </LinearLayout>
+  <TextView
+      style="@style/HeaderStyle"
+      android:text="solution" />
+  <TextView
+    android:id="@+id/SolutionTxt"
+    style="@style/SubHeaderStyle"
+    android:text="[No solution found]" />
 </LinearLayout>

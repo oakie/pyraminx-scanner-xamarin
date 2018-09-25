@@ -18,7 +18,7 @@ namespace Pyraminx.Core
 
     public class Pyraminx
     {
-        protected static readonly Dictionary<Axis, List<Axis>> AxialOffset = new Dictionary<Axis, List<Axis>> {
+        public static readonly Dictionary<Axis, List<Axis>> AxialOffset = new Dictionary<Axis, List<Axis>> {
             { Axis.W, new List<Axis> {Axis.X, Axis.Z, Axis.Y } },
             { Axis.X, new List<Axis> {Axis.W, Axis.Y, Axis.Z } },
             { Axis.Y, new List<Axis> {Axis.W, Axis.Z, Axis.X } },
@@ -26,6 +26,28 @@ namespace Pyraminx.Core
         };
 
         public readonly Polyhedron[,,,] Polys = new Polyhedron[3, 3, 3, 3];
+
+        public Polyhedron GetTip(Axis axis)
+        {
+            if(axis == Axis.W)
+                return Polys[2, 0, 0, 0];
+            if (axis == Axis.X)
+                return Polys[0, 2, 0, 0];
+            if (axis == Axis.Y)
+                return Polys[0, 0, 2, 0];
+            return Polys[0, 0, 0, 2];
+        }
+
+        public Polyhedron GetAxial(Axis axis)
+        {
+            if (axis == Axis.W)
+                return Polys[1, 0, 0, 0];
+            if (axis == Axis.X)
+                return Polys[0, 1, 0, 0];
+            if (axis == Axis.Y)
+                return Polys[0, 0, 1, 0];
+            return Polys[0, 0, 0, 1];
+        }
 
         public PyraminxTransform GetTransform()
         {
