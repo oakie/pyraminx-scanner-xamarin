@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Android.OS;
+﻿using Android.OS;
 using Android.Views;
 using Android.Widget;
-using Pyraminx.Common;
+using Pyraminx.App.Misc;
 using Pyraminx.Core;
+using System.Collections.Generic;
+using System.Linq;
+using Axis = Pyraminx.Core.Axis;
 
 namespace Pyraminx.App.Views
 {
@@ -15,7 +15,57 @@ namespace Pyraminx.App.Views
         public new static string Title => "Solver";
 
         protected FaceTile TileW, TileX, TileY, TileZ;
+        protected Button ClearStateBtn, ResetStateBtn, SolveStateBtn;
         protected TextView SolutionText;
+
+        private static List<int[]> OrderW = new List<int[]>
+        {
+            new []{0, 0, 0, 2},
+            new []{0, 0, 1, 1},
+            new []{0, 0, 0, 1},
+            new []{0, 1, 0, 1},
+            new []{0, 0, 2, 0},
+            new []{0, 0, 1, 0},
+            new []{0, 1, 1, 0},
+            new []{0, 1, 0, 0},
+            new []{0, 2, 0, 0}
+        };
+        private static List<int[]> OrderX = new List<int[]>
+        {
+            new []{2, 0, 0, 0},
+            new []{1, 0, 1, 0},
+            new []{1, 0, 0, 0},
+            new []{1, 0, 0, 1},
+            new []{0, 0, 2, 0},
+            new []{0, 0, 1, 0},
+            new []{0, 0, 1, 1},
+            new []{0, 0, 0, 1},
+            new []{0, 0, 0, 2}
+        };
+        private static List<int[]> OrderY = new List<int[]>
+        {
+            new []{2, 0, 0, 0},
+            new []{1, 0, 0, 1},
+            new []{1, 0, 0, 0},
+            new []{1, 1, 0, 0},
+            new []{0, 0, 0, 2},
+            new []{0, 0, 0, 1},
+            new []{0, 1, 0, 1},
+            new []{0, 1, 0, 0},
+            new []{0, 2, 0, 0}
+        };
+        private static List<int[]> OrderZ = new List<int[]>
+        {
+            new []{2, 0, 0, 0},
+            new []{1, 1, 0, 0},
+            new []{1, 0, 0, 0},
+            new []{1, 0, 1, 0},
+            new []{0, 2, 0, 0},
+            new []{0, 1, 0, 0},
+            new []{0, 1, 1, 0},
+            new []{0, 0, 1, 0},
+            new []{0, 0, 2, 0}
+        };
 
         public new static BaseFragment Create()
         {
@@ -29,9 +79,39 @@ namespace Pyraminx.App.Views
             var root = base.OnCreateView(inflater, container, savedInstanceState);
 
             TileW = root.FindViewById<FaceTile>(Resource.Id.FaceTileW);
+            TileW.FaceClick += index => SelectFaceTile(Axis.W, OrderW);
             TileX = root.FindViewById<FaceTile>(Resource.Id.FaceTileX);
+            TileX.FaceClick += index => SelectFaceTile(Axis.X, OrderX);
             TileY = root.FindViewById<FaceTile>(Resource.Id.FaceTileY);
+            TileY.FaceClick += index => SelectFaceTile(Axis.Y, OrderY);
             TileZ = root.FindViewById<FaceTile>(Resource.Id.FaceTileZ);
+            TileZ.FaceClick += index => SelectFaceTile(Axis.Z, OrderZ);
+
+            ClearStateBtn = root.FindViewById<Button>(Resource.Id.ClearStateBtn);
+            ClearStateBtn.Click += (sender, args) =>
+            {
+                if (!ServiceBound)
+                    return;
+                Service.Solution.Model.Clear();
+                Service.Solution.NotifyModelChanged();
+            };
+
+            ResetStateBtn = root.FindViewById<Button>(Resource.Id.ResetStateBtn);
+            ResetStateBtn.Click += (sender, args) =>
+            {
+                if (!ServiceBound)
+                    return;
+                Service.Solution.Model.Reset();
+                Service.Solution.NotifyModelChanged();
+            };
+
+            SolveStateBtn = root.FindViewById<Button>(Resource.Id.SolveStateBtn);
+            SolveStateBtn.Click += async (sender, args) =>
+            {
+                if (!ServiceBound)
+                    return;
+                await Service.Solution.FindSolution();
+            };
 
             SolutionText = root.FindViewById<TextView>(Resource.Id.SolutionTxt);
 
@@ -88,7 +168,7 @@ namespace Pyraminx.App.Views
         {
             ParentActivity.RunOnUiThread(() =>
             {
-                if(solution == null)
+                if (solution == null)
                     SolutionText.Text = "[No solution found]";
                 else
                     SolutionText.Text = solution;
@@ -97,7 +177,7 @@ namespace Pyraminx.App.Views
 
         protected void RefreshFaceTiles()
         {
-            if(!ServiceBound || Service?.Solution.Model == null)
+            if (!ServiceBound || Service?.Solution.Model == null)
             {
                 var undefined = new List<FaceColor>(Enumerable.Repeat(FaceColor.Undefined, 9));
                 TileW.SetFace(undefined);
@@ -109,62 +189,32 @@ namespace Pyraminx.App.Views
 
             var p = Service.Solution.Model;
 
-            var w = new List<FaceColor>
-            {
-                p[0, 0, 0, 2].W,
-                p[0, 0, 1, 1].W,
-                p[0, 0, 0, 1].W,
-                p[0, 1, 0, 1].W,
-                p[0, 0, 2, 0].W,
-                p[0, 0, 1, 0].W,
-                p[0, 1, 1, 0].W,
-                p[0, 1, 0, 0].W,
-                p[0, 2, 0, 0].W
-            };
+            var w = OrderW.Select(h => p[h].W);
             TileW.SetFace(w);
-
-            var x = new List<FaceColor>
-            {
-                p[2, 0, 0, 0].X,
-                p[1, 0, 1, 0].X,
-                p[1, 0, 0, 0].X,
-                p[1, 0, 0, 1].X,
-                p[0, 0, 2, 0].X,
-                p[0, 0, 1, 0].X,
-                p[0, 0, 1, 1].X,
-                p[0, 0, 0, 1].X,
-                p[0, 0, 0, 2].X
-
-            };
+            var x = OrderX.Select(h => p[h].X);
             TileX.SetFace(x);
-
-            var y = new List<FaceColor>
-            {
-                p[2, 0, 0, 0].Y,
-                p[1, 0, 0, 1].Y,
-                p[1, 0, 0, 0].Y,
-                p[1, 1, 0, 0].Y,
-                p[0, 0, 0, 2].Y,
-                p[0, 0, 0, 1].Y,
-                p[0, 1, 0, 1].Y,
-                p[0, 1, 0, 0].Y,
-                p[0, 2, 0, 0].Y
-            };
+            var y = OrderY.Select(h => p[h].Y);
             TileY.SetFace(y);
+            var z = OrderZ.Select(h => p[h].Z);
+            TileZ.SetFace(z);
+        }
 
-            var z = new List<FaceColor>
+        protected void SelectFaceTile(Axis face, List<int[]> order)
+        {
+            Logger.Debug("SelectFaceTile");
+            if (!ServiceBound)
+                return;
+
+            var dialog = new FaceDialogBuilder
             {
-                p[2, 0, 0, 0].Z,
-                p[1, 1, 0, 0].Z,
-                p[1, 0, 0, 0].Z,
-                p[1, 0, 1, 0].Z,
-                p[0, 2, 0, 0].Z,
-                p[0, 1, 0, 0].Z,
-                p[0, 1, 1, 0].Z,
-                p[0, 0, 1, 0].Z,
-                p[0, 0, 2, 0].Z
+                Face = face,
+                Model = Service.Solution.Model,
+                Order = order
             };
-            TileZ.SetFace(z);            
+
+            dialog.DialogClose += Service.Solution.NotifyModelChanged;
+
+            dialog.Show(Context);
         }
     }
 }

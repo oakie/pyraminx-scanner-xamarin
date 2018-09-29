@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Pyraminx.Core
 {
-    public enum Axis { W = 1, X = 2, Y = 4, Z = 8 };
+    public enum Axis { Undefined = 0, W = 1, X = 2, Y = 4, Z = 8 };
     public enum Direction { None, Pos, Neg }
 
     public class Polyhedron

@@ -54,6 +54,16 @@ namespace Pyraminx.App.Views
                     Service.Solution.DeliverGoAhead();
             };
             ContinueBtn.Enabled = ServiceBound && Service.Solution.InProgress;
+
+            CancelBtn = FindViewById<Button>(Resource.Id.CancelBtn);
+            CancelBtn.Click += (sender, args) =>
+            {
+                Logger.Debug("CancelBtn.Click");
+                if (!ServiceBound || !Service.Solution.InProgress)
+                    return;
+                Service.Solution.Cancel();
+            };
+            CancelBtn.Enabled = ServiceBound && Service.Solution.InProgress;
         }
 
         protected override void OnProgressUpdate(SolutionState state)
@@ -76,11 +86,12 @@ namespace Pyraminx.App.Views
                 }
 
                 var idle = state == SolutionState.Start || state == SolutionState.Done;
-                var pending = !idle && Service.Solution.AwaitingGoAhead;
+                var pending = Service.Solution.AwaitingGoAhead;
 
-                RunContinuousBtn.Enabled = state == SolutionState.Start || state == SolutionState.Done;
-                RunHaltedBtn.Enabled = state == SolutionState.Start || state == SolutionState.Done;
-                ContinueBtn.Enabled = pending;
+                RunContinuousBtn.Enabled = idle;
+                RunHaltedBtn.Enabled = idle;
+                ContinueBtn.Enabled = !idle && pending;
+                CancelBtn.Enabled = !idle;
             });
         }
     }

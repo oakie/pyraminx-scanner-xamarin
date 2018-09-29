@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Android.Content;
+﻿using Android.Content;
 using Android.Graphics;
 using Android.Util;
 using Android.Views;
-using OpenCV.Core;
 using Pyraminx.Core;
 using Pyraminx.Scanner;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Rect = Android.Graphics.Rect;
 
 namespace Pyraminx.App.Views
 {
+    public delegate void FaceletClickDelegate(int index);
+
     public class FaceTile : View
     {
         protected Bitmap Bitmap;
         protected Canvas Canvas;
         protected Path[] Paths = new Path[9];
+        protected Region[] Regions = new Region[9];
         protected string[] Tips = new string[3];
         protected float[,] Corners = new float[3, 2];
         protected List<int> Facelets = new List<int>();
@@ -31,6 +33,8 @@ namespace Pyraminx.App.Views
             { FaceColor.Orange.Value, Color.Orange},
             { FaceColor.Green.Value, Color.Green }
         };
+
+        public event FaceletClickDelegate FaceClick;
 
         public FaceTile(Context context, IAttributeSet attrs) : base(context, attrs)
         {
@@ -48,6 +52,7 @@ namespace Pyraminx.App.Views
             for (int i = 0; i < 9; ++i)
             {
                 Paths[i] = new Path();
+                Regions[i] = new Region();
                 Facelets.Add(FaceColor.Undefined.Value);
             }
 
@@ -83,6 +88,30 @@ namespace Pyraminx.App.Views
             }
         }
 
+        public override bool OnTouchEvent(MotionEvent evt)
+        {
+            Log.Debug("PMX", "OnTouchEvent");
+            if (FaceClick == null)
+                return false;
+            if (evt.Action != MotionEventActions.Down)
+                return false;
+
+            var x = (int)evt.GetX();
+            var y = (int)evt.GetY();
+
+            for (int i = 0; i < Regions.Length; ++i)
+            {
+                if(Regions[i].Contains(x, y))
+                {
+                    FaceClick(i);
+                    return true;
+                }
+            }
+
+            FaceClick(-1);
+            return true;
+        }
+
         protected override void OnMeasure(int w, int h)
         {
             base.OnMeasure(w, h);
@@ -102,6 +131,9 @@ namespace Pyraminx.App.Views
             float cx = w / 2f, cy = h / 2f;
             var triangles = Facelet.GenerateTriangles();
 
+            var ys = triangles.SelectMany(g => g.Select(p => (float)p.Y)).ToList();
+            cy += scale * (ys.Max() - ys.Min()) / 6;
+
             for (int i = 0; i < 9; ++i)
             {
                 var t = triangles[i];
@@ -109,6 +141,8 @@ namespace Pyraminx.App.Views
                 Paths[i].MoveTo(cx + (float)t[2].X * scale, cy + (float)t[2].Y * scale);
                 foreach (var p in t)
                     Paths[i].LineTo(cx + (float)p.X * scale, cy + (float)p.Y * scale);
+
+                Regions[i].SetPath(Paths[i], GetBounds(Paths[i]));
             }
 
             var v = Facelet.Vertices;
@@ -119,6 +153,13 @@ namespace Pyraminx.App.Views
             Corners[1, 1] = cy + (float)v[6].Y * scale * 1.1f;
             Corners[2, 0] = cx + (float)v[9].X * scale * 1.1f;
             Corners[2, 1] = cy + (float)v[9].Y * scale * 1.1f;
+        }
+
+        protected Region GetBounds(Path p)
+        {
+            var bounds = new RectF();
+            p.ComputeBounds(bounds, true);
+            return new Region((int)bounds.Left, (int)bounds.Top, (int)bounds.Right, (int)bounds.Bottom);
         }
 
         protected override void OnDraw(Canvas canvas)
@@ -146,6 +187,12 @@ namespace Pyraminx.App.Views
         public void SetFace(IEnumerable<FaceColor> facelets)
         {
             Facelets = facelets.Select(f => f.Value).ToList();
+            Invalidate();
+        }
+
+        public void SetLabels(IEnumerable<string> tips)
+        {
+            Tips = tips.ToArray();
             Invalidate();
         }
     }

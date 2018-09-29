@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Android.Speech;
-using Java.Lang;
 using Exception = System.Exception;
 using StringBuilder = System.Text.StringBuilder;
 
@@ -13,7 +10,7 @@ namespace Pyraminx.Core
         public Axis TipW { get; set; }
         public Axis TipX { get; set; }
 
-        public int Hash => ((int) TipW << 4) + ((int) TipX << 0);
+        public int Hash => ((int)TipW << 4) + ((int)TipX << 0);
     }
 
     public class Pyraminx
@@ -29,7 +26,7 @@ namespace Pyraminx.Core
 
         public Polyhedron GetTip(Axis axis)
         {
-            if(axis == Axis.W)
+            if (axis == Axis.W)
                 return Polys[2, 0, 0, 0];
             if (axis == Axis.X)
                 return Polys[0, 2, 0, 0];
@@ -54,7 +51,7 @@ namespace Pyraminx.Core
             var w = Polys[2, 0, 0, 0].MissingColors;
             var x = Polys[0, 2, 0, 0].MissingColors;
 
-            if(!w.Any() || !x.Any())
+            if (!w.Any() || !x.Any())
                 throw new Exception("Invalid pyraminx state! Cannot calculate transform.");
 
             return new PyraminxTransform
@@ -84,34 +81,60 @@ namespace Pyraminx.Core
 
         public Polyhedron this[int w, int x, int y, int z]
         {
-            get { return Polys[w, x, y, z]; }
-            set { Polys[w, x, y, z] = value; }
+            get => Polys[w, x, y, z];
+            set => Polys[w, x, y, z] = value;
         }
 
-        public static Pyraminx CreateSolved()
+        public Polyhedron this[int[] a]
         {
-            var p = new Pyraminx();
+            get => Polys[a[0], a[1], a[2], a[3]];
+            set => Polys[a[0], a[1], a[2], a[3]] = value;
+        }
+
+        public void Clear()
+        {
             // Tips
-            p[2, 0, 0, 0] = new Polyhedron(FaceColor.Undefined, FaceColor.Blue, FaceColor.Orange, FaceColor.Green);
-            p[0, 2, 0, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Undefined, FaceColor.Orange, FaceColor.Green);
-            p[0, 0, 2, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Undefined, FaceColor.Green);
-            p[0, 0, 0, 2] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Orange, FaceColor.Undefined);
+            Polys[2, 0, 0, 0] = new Polyhedron();
+            Polys[0, 2, 0, 0] = new Polyhedron();
+            Polys[0, 0, 2, 0] = new Polyhedron();
+            Polys[0, 0, 0, 2] = new Polyhedron();
 
             // Centers
-            p[1, 0, 0, 0] = new Polyhedron(FaceColor.Undefined, FaceColor.Blue, FaceColor.Orange, FaceColor.Green);
-            p[0, 1, 0, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Undefined, FaceColor.Orange, FaceColor.Green);
-            p[0, 0, 1, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Undefined, FaceColor.Green);
-            p[0, 0, 0, 1] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Orange, FaceColor.Undefined);
+            Polys[1, 0, 0, 0] = new Polyhedron();
+            Polys[0, 1, 0, 0] = new Polyhedron();
+            Polys[0, 0, 1, 0] = new Polyhedron();
+            Polys[0, 0, 0, 1] = new Polyhedron();
 
             // Edges
-            p[1, 1, 0, 0] = new Polyhedron(FaceColor.Undefined, FaceColor.Undefined, FaceColor.Orange, FaceColor.Green);
-            p[1, 0, 1, 0] = new Polyhedron(FaceColor.Undefined, FaceColor.Blue, FaceColor.Undefined, FaceColor.Green);
-            p[1, 0, 0, 1] = new Polyhedron(FaceColor.Undefined, FaceColor.Blue, FaceColor.Orange, FaceColor.Undefined);
-            p[0, 1, 1, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Undefined, FaceColor.Undefined, FaceColor.Green);
-            p[0, 1, 0, 1] = new Polyhedron(FaceColor.Yellow, FaceColor.Undefined, FaceColor.Orange, FaceColor.Undefined);
-            p[0, 0, 1, 1] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Undefined, FaceColor.Undefined);
+            Polys[1, 1, 0, 0] = new Polyhedron();
+            Polys[1, 0, 1, 0] = new Polyhedron();
+            Polys[1, 0, 0, 1] = new Polyhedron();
+            Polys[0, 1, 1, 0] = new Polyhedron();
+            Polys[0, 1, 0, 1] = new Polyhedron();
+            Polys[0, 0, 1, 1] = new Polyhedron();
+        }
 
-            return p;
+        public void Reset()
+        {
+            // Tips
+            Polys[2, 0, 0, 0] = new Polyhedron(FaceColor.Undefined, FaceColor.Blue, FaceColor.Orange, FaceColor.Green);
+            Polys[0, 2, 0, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Undefined, FaceColor.Orange, FaceColor.Green);
+            Polys[0, 0, 2, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Undefined, FaceColor.Green);
+            Polys[0, 0, 0, 2] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Orange, FaceColor.Undefined);
+
+            // Centers
+            Polys[1, 0, 0, 0] = new Polyhedron(FaceColor.Undefined, FaceColor.Blue, FaceColor.Orange, FaceColor.Green);
+            Polys[0, 1, 0, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Undefined, FaceColor.Orange, FaceColor.Green);
+            Polys[0, 0, 1, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Undefined, FaceColor.Green);
+            Polys[0, 0, 0, 1] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Orange, FaceColor.Undefined);
+
+            // Edges
+            Polys[1, 1, 0, 0] = new Polyhedron(FaceColor.Undefined, FaceColor.Undefined, FaceColor.Orange, FaceColor.Green);
+            Polys[1, 0, 1, 0] = new Polyhedron(FaceColor.Undefined, FaceColor.Blue, FaceColor.Undefined, FaceColor.Green);
+            Polys[1, 0, 0, 1] = new Polyhedron(FaceColor.Undefined, FaceColor.Blue, FaceColor.Orange, FaceColor.Undefined);
+            Polys[0, 1, 1, 0] = new Polyhedron(FaceColor.Yellow, FaceColor.Undefined, FaceColor.Undefined, FaceColor.Green);
+            Polys[0, 1, 0, 1] = new Polyhedron(FaceColor.Yellow, FaceColor.Undefined, FaceColor.Orange, FaceColor.Undefined);
+            Polys[0, 0, 1, 1] = new Polyhedron(FaceColor.Yellow, FaceColor.Blue, FaceColor.Undefined, FaceColor.Undefined);
         }
 
         public void ExecuteTurns(string cmd, bool tipsonly = false)

@@ -6,6 +6,7 @@ namespace Pyraminx.Core
     {
         public int Value { get; protected set; }
         public string Name { get; protected set; }
+        public FaceColor Next { get; protected set; }
 
         public static FaceColor Undefined = new FaceColor { Value = -1, Name = "Undefined" };
         public static FaceColor Yellow = new FaceColor { Value = 0, Name = "Yellow" };
@@ -14,6 +15,15 @@ namespace Pyraminx.Core
         public static FaceColor Orange = new FaceColor { Value = 3, Name = "Orange" };
 
         public static IEnumerable<FaceColor> AsEnumerable = new[] { Yellow, Blue, Green, Orange };
+
+        static FaceColor()
+        {
+            Undefined.Next = Yellow;
+            Yellow.Next = Blue;
+            Blue.Next = Green;
+            Green.Next = Orange;
+            Orange.Next = Undefined;
+        }
 
         protected FaceColor() { }
 

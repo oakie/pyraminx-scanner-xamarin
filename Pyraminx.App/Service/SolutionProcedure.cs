@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Pyraminx = Pyraminx.Core.Pyraminx;
 
 namespace Pyraminx.App.Service
 {
@@ -27,7 +28,7 @@ namespace Pyraminx.App.Service
         public PyraminxSolver Solver { get; set; }
 
         protected List<IEnumerable<Facelet>> FaceScans { get; set; }
-        public Core.Pyraminx Model { get; protected set; }
+        public Core.Pyraminx Model { get; protected set; } = new Core.Pyraminx();
         public string Solution { get; protected set; }
 
         public event OnProgressUpdate OnProgressUpdate;
@@ -93,6 +94,7 @@ namespace Pyraminx.App.Service
             if (!Robot.Connected)
             {
                 Utils.Toast("Robot is not connected");
+                Cancel();
                 return;
             }
 
@@ -137,6 +139,18 @@ namespace Pyraminx.App.Service
             Logger.Debug("Finish solution procedure");
             WorkerThread = null;
             SetState(SolutionState.Done);
+        }
+
+        public void Cancel()
+        {
+            Logger.Debug("Cancel solution procedure");
+            WorkerThread = null;
+            SetState(SolutionState.Start);
+        }
+
+        public void NotifyModelChanged()
+        {
+            OnModelUpdate?.Invoke(Model);
         }
 
         protected async Task ScanFace(string flip)

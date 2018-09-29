@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:pmx="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <pyraminx.app.views.FaceTile
+        android:id="@+id/FaceTile"
+        pmx:tip_u="Z"
+        pmx:tip_l="Y"
+        pmx:tip_r="X"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
